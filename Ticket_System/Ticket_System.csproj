@@ -111,9 +111,6 @@
   <ItemGroup>
     <Folder Include="fonts\" />
     <Folder Include="images\" />
-    <Folder Include="mvvm\Model\" />
-    <Folder Include="mvvm\ViewModel\" />
-    <Folder Include="mvvm\View\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace WpfApp1_test.Core
+namespace Ticket_System.Core
 {
     internal class RelayCommand : ICommand
     {
