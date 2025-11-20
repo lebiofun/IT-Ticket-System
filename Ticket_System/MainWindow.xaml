@@ -23,20 +23,18 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            
+
 
             <TextBlock Text="Ticket System" VerticalAlignment="Center" 
                     HorizontalAlignment="Left" Margin="50,0,0,0"
                     Foreground="White" FontSize="22"/>
-            
+
             <StackPanel Grid.Row="1">
                 <RadioButton Margin="10,5,10,5" Foreground="#222222" Background="Orange" Height="50" FontSize="20" Content="Home" Style="{StaticResource MenuButtonTheme1}"/>
                 <RadioButton Margin="10,5,10,5" Foreground="#222222" Background="lightGreen" Height="50" FontSize="20" Content="Ticket" Style="{StaticResource MenuButtonTheme1}"/>
                 <RadioButton Margin="10,5,10,5" Foreground="#222222" Background="Pink" Height="50" FontSize="20" Content="Settings" Style="{StaticResource MenuButtonTheme1}"/>
-                <RadioButton Margin="10,150,10,5" Foreground="#222222" Background="LightBlue" Height="50" FontSize="20" Content="admin panel" Style="{StaticResource MenuButtonTheme1}"/>
+                <RadioButton Margin="10,160,10,5" Foreground="#222222" Background="LightBlue" Height="50" FontSize="20" Content="admin panel" Style="{StaticResource MenuButtonTheme1}"/>
             </StackPanel>
         </Grid>
-
-
     </Border>
 </Window>
