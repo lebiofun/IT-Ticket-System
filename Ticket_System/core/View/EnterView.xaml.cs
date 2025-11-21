@@ -14,17 +14,17 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Ticket_System.core.ViewModels;
 
-namespace Ticket_System
+namespace Ticket_System.core.View
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Логика взаимодействия для EnterView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class EnterView : UserControl
     {
-        public MainWindow()
+        public EnterView()
         {
+            
             InitializeComponent();
-            DataContext = new Ticket_System.core.ViewModels.MainViewModel();
         }
     }
 }

@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\Gamer\source\repos\IT-Ticket-System-WPF\Ticket_System\obj\Debug\
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\
 Ticket_System
 none
 false
 DEBUG;TRACE
-C:\Users\Gamer\source\repos\IT-Ticket-System-WPF\Ticket_System\App.xaml
-4-475212283
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\App.xaml
+11-495905094
 
-8-2143230336
-13-38814620
-MainWindow.xaml;theme\GameButtonTheme.xaml;theme\MenuButtonTheme.xaml;theme\RadioButtonTheme.xaml;
+271554314157
+15-928923290
+core\View\AdminPanelView.xaml;core\View\EnterView.xaml;core\View\HomeView.xaml;core\View\RegistrationView.xaml;core\View\SettingView.xaml;core\View\TickitView.xaml;MainWindow.xaml;theme\ButtonTheme.xaml;theme\MenuButtonTheme.xaml;theme\RadioButtonTheme.xaml;theme\TextBoxTheme.xaml;
 
-True
+False
 

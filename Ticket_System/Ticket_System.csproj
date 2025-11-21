@@ -57,6 +57,30 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="core\View\AdminPanelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="core\View\EnterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="core\View\HomeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="core\View\RegistrationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="core\View\SettingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="core\View\TickitView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -67,6 +91,30 @@
     </Compile>
     <Compile Include="core\ObservableObject.cs" />
     <Compile Include="core\RelayCommand.cs" />
+    <Compile Include="core\ViewModels\AdminPanelViewModel.cs" />
+    <Compile Include="core\ViewModels\EnterViewModel.cs" />
+    <Compile Include="core\ViewModels\MainViewModel.cs" />
+    <Compile Include="core\ViewModels\RegistrationViewModel.cs" />
+    <Compile Include="core\ViewModels\SettingViewModel.cs" />
+    <Compile Include="core\ViewModels\TickitViewModel.cs" />
+    <Compile Include="core\View\AdminPanelView.xaml.cs">
+      <DependentUpon>AdminPanelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="core\View\EnterView.xaml.cs">
+      <DependentUpon>EnterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="core\View\HomeView.xaml.cs">
+      <DependentUpon>HomeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="core\View\RegistrationView.xaml.cs">
+      <DependentUpon>RegistrationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="core\View\SettingView.xaml.cs">
+      <DependentUpon>SettingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="core\View\TickitView.xaml.cs">
+      <DependentUpon>TickitView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="core\_Models\ALog.cs" />
     <Compile Include="core\_Models\Category.cs" />
     <Compile Include="core\_Models\Comment.cs" />
@@ -79,7 +127,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="theme\GameButtonTheme.xaml">
+    <Page Include="theme\ButtonTheme.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -90,6 +138,10 @@
     <Page Include="theme\RadioButtonTheme.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="theme\TextBoxTheme.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,6 @@ C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\bin\Debu
 C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\bin\Debug\Ticket_System.exe
 C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\bin\Debug\Ticket_System.pdb
 C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\Ticket_System.csproj.AssemblyReference.cache
-C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\theme\GameButtonTheme.baml
 C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\theme\MenuButtonTheme.baml
 C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\theme\RadioButtonTheme.baml
 C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\MainWindow.g.cs
@@ -18,3 +17,18 @@ C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debu
 C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\Ticket_System.exe
 C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\Ticket_System.pdb
 C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\Ticket_System.exe.config
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\core\View\EnterView.g.cs
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\core\View\HomeView.g.cs
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\core\View\RegistrationView.g.cs
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\core\View\EnterView.baml
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\core\View\HomeView.baml
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\core\View\RegistrationView.baml
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\theme\ButtonTheme.baml
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\theme\TextBoxTheme.baml
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\core\View\TickitView.g.cs
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\core\View\TickitView.baml
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\core\View\AdminPanelView.g.cs
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\core\View\SettingView.g.cs
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\core\View\AdminPanelView.baml
+C:\Users\lebio\source\repos\lebiofun\IT-Ticket-System-WPF\Ticket_System\obj\Debug\core\View\SettingView.baml

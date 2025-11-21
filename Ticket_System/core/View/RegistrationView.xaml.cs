@@ -12,19 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Ticket_System.core.ViewModels;
 
-namespace Ticket_System
+namespace Ticket_System.core.View
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Логика взаимодействия для RegistrationView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class RegistrationView : UserControl
     {
-        public MainWindow()
+        public RegistrationView()
         {
             InitializeComponent();
-            DataContext = new Ticket_System.core.ViewModels.MainViewModel();
         }
     }
 }

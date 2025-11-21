@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModel="clr-namespace:Ticket_System.core.ViewModels"
         xmlns:local="clr-namespace:Ticket_System"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
@@ -11,6 +12,9 @@
         Background="Transparent"
         AllowsTransparency="True"
         WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <viewModel:EnterViewModel/>
+    </Window.DataContext>
     <Border Background="#272727" CornerRadius="20">
         <Grid>
 
@@ -30,11 +34,15 @@
                     Foreground="White" FontSize="22"/>
 
             <StackPanel Grid.Row="1">
-                <RadioButton Margin="10,5,10,5" Foreground="#222222" Background="Orange" Height="50" FontSize="20" Content="Home" Style="{StaticResource MenuButtonTheme1}"/>
-                <RadioButton Margin="10,5,10,5" Foreground="#222222" Background="lightGreen" Height="50" FontSize="20" Content="Ticket" Style="{StaticResource MenuButtonTheme1}"/>
-                <RadioButton Margin="10,5,10,5" Foreground="#222222" Background="Pink" Height="50" FontSize="20" Content="Settings" Style="{StaticResource MenuButtonTheme1}"/>
-                <RadioButton Margin="10,160,10,5" Foreground="#222222" Background="LightBlue" Height="50" FontSize="20" Content="admin panel" Style="{StaticResource MenuButtonTheme1}"/>
+                <RadioButton Command="{Binding EnterViewCommand}" IsChecked="True" Margin="10,5,10,5" Foreground="#222222" Background="Orange" Height="50" FontSize="20" Content="Home" Style="{StaticResource MenuButtonTheme1}"/>
+                <RadioButton Command="{Binding TicketViewCommand}" Margin="10,5,10,5" Foreground="#222222" Background="lightGreen" Height="50" FontSize="20" Content="Ticket" Style="{StaticResource MenuButtonTheme1}"/>
+                <RadioButton Command="{Binding SettingViewCommand}" Margin="10,5,10,5" Foreground="#222222" Background="Pink" Height="50" FontSize="20" Content="Settings" Style="{StaticResource MenuButtonTheme1}"/>
+                <RadioButton Command="{Binding AdminPanelViewCommand}" Margin="10,160,10,5" Foreground="#222222" Background="LightBlue" Height="50" FontSize="20" Content="admin panel" Style="{StaticResource MenuButtonTheme1}"/>
             </StackPanel>
+
+            <ContentControl Content="{Binding CurrentView}" Grid.Column="1" Grid.RowSpan="2">
+                
+            </ContentControl>
         </Grid>
     </Border>
 </Window>

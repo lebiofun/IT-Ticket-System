@@ -2,12 +2,34 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Ticket_System"
+             xmlns:viewModel="clr-namespace:Ticket_System.core.ViewModels"
+             xmlns:view="clr-namespace:Ticket_System.core.View"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/theme/MenuButtonTheme.xaml"/>
+                <ResourceDictionary Source="/theme/TextBoxTheme.xaml"/>
+                <ResourceDictionary Source="/theme/ButtonTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type viewModel:EnterViewModel}">
+                <view:EnterView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:RegistrationViewModel}">
+                <view:RegistrationView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:TickitViewModel}">
+                <view:TickitView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:SettingViewModel}">
+                
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:AdminPanelViewModel}">
+                <view:AdminPanelView/>
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
+    
+
