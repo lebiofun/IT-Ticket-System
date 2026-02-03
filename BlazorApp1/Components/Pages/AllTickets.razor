@@ -1,0 +1,70 @@
+@page "/all-tickets"
+@inject TicketApp.Services.TicketState TicketState
+@rendermode InteractiveServer
+
+<h3>All tickets (Tech Support)</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>User</th>
+            <th>Status</th>
+            <th>Employee</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Tickets)
+        {
+            <tr>
+                <td>@t.TicketId</td>
+                <td>@t.Title</td>
+                <td>@(t.UserId ?? 0)</td>
+                <td>
+                    <select @onchange="(e) => ChangeStatus(t.TicketId, e.Value?.ToString())" 
+                            class="form-select form-select-sm" 
+                            style="width:140px;">
+                        <option value="1" selected="@(t.StatusId==1)">New</option>
+                        <option value="2" selected="@(t.StatusId==2)">In Progress</option>
+                        <option value="3" selected="@(t.StatusId==3)">Closed</option>
+                    </select>
+                </td>
+                <td>@(t.EmployeeId?.ToString() ?? "-")</td>
+                <td><button class="btn btn-link" @onclick="() => Edit(t.TicketId)">Open</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private Action? _onChangeHandler;
+    private IEnumerable<TicketApp.Models.Ticket> Tickets = Array.Empty<TicketApp.Models.Ticket>();
+
+    protected override void OnInitialized()
+    {
+        _onChangeHandler = () => InvokeAsync(() => 
+        { 
+            Tickets = TicketState.GetAll(); 
+            StateHasChanged(); 
+        });
+        
+        TicketState.OnChange += _onChangeHandler;
+        TicketState.SeedSample();
+        Tickets = TicketState.GetAll();
+    }
+
+    private void ChangeStatus(int id, string? value)
+    {
+        if (!int.TryParse(value, out var s)) return;
+        TicketState.ChangeStatus(id, s);
+    }
+
+    private void Edit(int id) => NavigationManager.NavigateTo($"/edit-ticket/{id}");
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+
+    public void Dispose() => TicketState.OnChange -= _onChangeHandler;
+}

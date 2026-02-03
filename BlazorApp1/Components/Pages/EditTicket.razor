@@ -1,0 +1,55 @@
+@page "/edit-ticket/{TicketId:int}"
+@inject TicketApp.Services.TicketState TicketState
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+
+<h3>Edit ticket</h3>
+
+@if (Ticket == null)
+{
+    <p>Ticket not found.</p>
+}
+else
+{
+    <div class="card p-3">
+        <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input class="form-control" @bind="Ticket.Title" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" rows="5" @bind="Ticket.Description"></textarea>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary" @onclick="Save">Save</button>
+            <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int TicketId { get; set; }
+    private TicketApp.Models.Ticket? Ticket;
+    private Action? _onChangeHandler;
+    
+    protected override void OnInitialized()
+    {
+        _onChangeHandler = () => InvokeAsync(() => 
+        { 
+            Ticket = TicketState.GetById(TicketId); 
+            StateHasChanged(); 
+        });
+        
+        TicketState.OnChange += _onChangeHandler;
+        Ticket = TicketState.GetById(TicketId);
+    }
+    private void Save()
+    {
+        if (Ticket == null) return;
+        TicketState.Update(Ticket);
+        Nav.NavigateTo("/my-tickets");
+    }
+    private void Cancel() => Nav.NavigateTo("/my-tickets");
+    public void Dispose() => TicketState.OnChange -= _onChangeHandler;
+}

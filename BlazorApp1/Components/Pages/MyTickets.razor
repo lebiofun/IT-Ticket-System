@@ -1,0 +1,44 @@
+@page "/my-tickets"
+@inject TicketApp.Services.TicketState TicketState  
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+
+<h3>My tickets</h3>
+<div class="mb-3">
+    <button class="btn btn-success" @onclick="CreateNew">Create ticket</button>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr><th>#</th><th>Title</th><th>Status</th><th>Updated</th><th></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Tickets)
+        {
+            <tr>
+                <td>@t.TicketId</td>
+                <td>@t.Title</td>
+                <td>@(t.StatusId ?? 0)</td>
+                <td>@(t.UpdatedAt?.ToLocalTime().ToString("g") ?? t.CreatedAt.ToLocalTime().ToString("g"))</td>
+                <td><button class="btn btn-link" @onclick="() => Edit(t.TicketId)">Edit</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private Action? _onChangeHandler;
+    private IEnumerable<TicketApp.Models.Ticket> Tickets = Array.Empty<TicketApp.Models.Ticket>();
+    protected override void OnInitialized()
+    {
+        _onChangeHandler = () => InvokeAsync(() => { Load(); StateHasChanged(); });
+        TicketState.OnChange += _onChangeHandler;
+        TicketState.SeedSample();
+        Load();
+    }
+
+    private void Load() => Tickets = TicketState.GetByUser(TicketState.CurrentUserId);
+    private void CreateNew() => Nav.NavigateTo("/create-ticket");
+    private void Edit(int id) => Nav.NavigateTo($"/edit-ticket/{id}");
+    public void Dispose() => TicketState.OnChange -= _onChangeHandler;
+}

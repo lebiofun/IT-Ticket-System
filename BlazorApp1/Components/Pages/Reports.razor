@@ -1,0 +1,48 @@
+@page "/reports"
+@inject TicketApp.Services.TicketState TicketState
+@rendermode InteractiveServer
+
+<h3>Reports</h3>
+<div class="card p-3 mb-3" style="max-width:700px;">
+    <div class="row">
+        <div class="col-md-4 mb-2">
+            <label class="form-label">From</label>
+            <input type="date" class="form-control" @bind="From" />
+            </div>
+                <div class="col-md-4 mb-2">
+                    <label class="form-label">To</label>
+                    <input type="date" class="form-control" @bind="To" />
+                </div>
+            <div class="col-md-4 d-flex align-items-end">
+            <button class="btn btn-primary" @onclick="Generate">Generate</button>
+        </div>
+    </div>
+</div>
+
+
+@if (Report.Any())
+{
+    <h5>Report results</h5>
+    <table class="table table-bordered">
+        <thead><tr><th>#</th><th>Title</th><th>Created</th></tr></thead>
+        <tbody>
+        @foreach(var r in Report)
+        {
+            <tr><td>@r.TicketId</td><td>@r.Title</td><td>@r.CreatedAt.ToLocalTime().ToString("g")</td></tr>
+        }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private DateTime From { get; set; } = DateTime.UtcNow.AddDays(-30);
+    private DateTime To { get; set; } = DateTime.UtcNow;
+    private List<TicketApp.Models.Ticket> Report { get; set; } = new();
+    private void Generate()
+    {
+        var fromUtc = From.ToUniversalTime();
+        var toUtc = To.ToUniversalTime().AddDays(1).AddTicks(-1);
+        Report = TicketState.GetAll().Where(t => t.CreatedAt >= fromUtc && t.CreatedAt <= toUtc).ToList();
+    }
+}

@@ -1,7 +1,9 @@
 using BlazorApp1.Components;
 
-var builder = WebApplication.CreateBuilder(args);
+using TicketApp.Services;
 
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton<TicketState>();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

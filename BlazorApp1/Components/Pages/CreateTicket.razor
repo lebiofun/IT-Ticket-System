@@ -1,0 +1,44 @@
+@page "/create-ticket"
+@inject TicketApp.Services.TicketState TicketState
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+
+<h3>Create ticket</h3>
+
+<div class="card p-4">
+    <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input class="form-control" @bind="Title" />
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" rows="6" @bind="Description"></textarea>
+    </div>
+    
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary" @onclick="Save">Create</button>
+        <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+    </div>
+</div>
+
+@code {
+    private string Title { get; set; } = string.Empty;
+    private string Description { get; set; } = string.Empty;
+    
+    private void Save()
+    {
+        var t = new TicketApp.Models.Ticket
+        {
+            Title = Title,
+            Description = Description,
+            UserId = TicketState.CurrentUserId,
+            StatusId = 1
+        };
+        
+        TicketState.Create(t);
+        Nav.NavigateTo("/my-tickets");
+    }
+    
+    private void Cancel() => Nav.NavigateTo("/my-tickets");
+}
