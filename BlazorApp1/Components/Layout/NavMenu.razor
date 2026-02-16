@@ -20,10 +20,15 @@
         </AuthorizeView>
 
         <AuthorizeView Roles="TechSupport">
+            <NavLink class="nav-link" href="/create-ticket">Create Ticket</NavLink>
+            <NavLink class="nav-link" href="/my-tickets">My Tickets</NavLink>
             <NavLink class="nav-link" href="/all-tickets">All Tickets</NavLink>
         </AuthorizeView>
 
         <AuthorizeView Roles="SupportManager">
+            <NavLink class="nav-link" href="/create-ticket">Create Ticket</NavLink>
+            <NavLink class="nav-link" href="/my-tickets">My Tickets</NavLink>
+            <NavLink class="nav-link" href="/all-tickets">All Tickets</NavLink>
             <NavLink class="nav-link" href="/assign-tech">Assign Tech</NavLink>
             <NavLink class="nav-link" href="/reports">Reports</NavLink>
         </AuthorizeView>

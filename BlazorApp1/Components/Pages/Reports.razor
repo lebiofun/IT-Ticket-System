@@ -30,7 +30,27 @@
         <tbody>
         @foreach(var r in Report)
         {
-            <tr><td>@r.TicketId</td><td>@r.Title</td><td>@r.CreatedAt.ToLocalTime().ToString("g")</td></tr>
+            <tr>
+                <td>@r.TicketId</td>
+                <td>@r.Title</td>
+                <td>@r.CreatedAt.ToLocalTime().ToString("g")</td>
+                @if (r.StatusId == 1)
+                {
+                    <td><span class="badge bg-warning text-dark">New</span></td>
+                }
+                else if (r.StatusId == 2)
+                {
+                    <td><span class="badge bg-info text-dark">In Progress</span></td>
+                }
+                else if (r.StatusId == 3)
+                {
+                    <td><span class="badge bg-success">Closed</span></td>
+                }
+                else
+                {
+                    <td><span class="badge bg-secondary">Unknown</span></td>
+                }
+            </tr>
         }
         </tbody>
     </table>

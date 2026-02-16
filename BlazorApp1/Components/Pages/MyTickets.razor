@@ -1,5 +1,5 @@
 @page "/my-tickets"
-@attribute [Authorize(Roles="EndUser, TechSupport")]
+@attribute [Authorize(Roles="EndUser, TechSupport, SupportManager")]
 @inject BlazorApp1.Services.TicketState TicketState  
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager Nav
@@ -20,7 +20,22 @@
             <tr>
                 <td>@t.TicketId</td>
                 <td>@t.Title</td>
-                <td>@(t.StatusId ?? 0)</td>
+                @if (t.StatusId == 1)
+                {
+                    <td><span class="badge bg-warning text-dark">Open</span></td>
+                }
+                else if (t.StatusId == 2)
+                {
+                    <td><span class="badge bg-info text-dark">In Progress</span></td>
+                }
+                else if (t.StatusId == 3)
+                {
+                    <td><span class="badge bg-success">Closed</span></td>
+                }
+                else
+                {
+                    <td><span class="badge bg-secondary">Unknown</span></td>
+                }
                 <td>@(t.UpdatedAt?.ToLocalTime().ToString("g") ?? t.CreatedAt.ToLocalTime().ToString("g"))</td>
                 <td><button class="btn btn-link" @onclick="() => Edit(t.TicketId)">Edit</button></td>
             </tr>

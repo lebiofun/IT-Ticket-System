@@ -1,5 +1,5 @@
 @page "/create-ticket"
-@attribute [Authorize(Roles = "EndUser")]
+@attribute [Authorize(Roles = "EndUser,TechSupport,SupportManager")]
 @inject AuthenticationStateProvider AuthProvider
 @inject BlazorApp1.Services.TicketState TicketState
 @inject NavigationManager Nav
