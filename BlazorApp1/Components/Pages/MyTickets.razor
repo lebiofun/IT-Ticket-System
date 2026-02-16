@@ -1,5 +1,7 @@
 @page "/my-tickets"
-@inject TicketApp.Services.TicketState TicketState  
+@attribute [Authorize(Roles="EndUser, TechSupport")]
+@inject BlazorApp1.Services.TicketState TicketState  
+@inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager Nav
 @rendermode InteractiveServer
 
@@ -28,16 +30,31 @@
 
 @code {
     private Action? _onChangeHandler;
-    private IEnumerable<TicketApp.Models.Ticket> Tickets = Array.Empty<TicketApp.Models.Ticket>();
-    protected override void OnInitialized()
+    private IEnumerable<BlazorApp1.Models.Ticket> Tickets = Array.Empty<BlazorApp1.Models.Ticket>();
+    protected override async Task OnInitializedAsync()
     {
-        _onChangeHandler = () => InvokeAsync(() => { Load(); StateHasChanged(); });
+        _onChangeHandler = async () =>
+        {
+            await Load();
+            StateHasChanged();
+        };
+
         TicketState.OnChange += _onChangeHandler;
-        TicketState.SeedSample();
-        Load();
+
+        await Load();
     }
 
-    private void Load() => Tickets = TicketState.GetByUser(TicketState.CurrentUserId);
+    private async Task Load()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId != null)
+            Tickets = TicketState.GetByUser(userId);
+    }
+
     private void CreateNew() => Nav.NavigateTo("/create-ticket");
     private void Edit(int id) => Nav.NavigateTo($"/edit-ticket/{id}");
     public void Dispose() => TicketState.OnChange -= _onChangeHandler;

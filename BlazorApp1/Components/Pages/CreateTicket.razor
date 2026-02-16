@@ -1,5 +1,7 @@
 @page "/create-ticket"
-@inject TicketApp.Services.TicketState TicketState
+@attribute [Authorize(Roles = "EndUser")]
+@inject AuthenticationStateProvider AuthProvider
+@inject BlazorApp1.Services.TicketState TicketState
 @inject NavigationManager Nav
 @rendermode InteractiveServer
 
@@ -25,20 +27,27 @@
 @code {
     private string Title { get; set; } = string.Empty;
     private string Description { get; set; } = string.Empty;
-    
-    private void Save()
+
+    private async Task Save()
     {
-        var t = new TicketApp.Models.Ticket
+        // Get current logged-in user ID
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var userId = authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        // Create ticket
+        var t = new BlazorApp1.Models.Ticket
         {
             Title = Title,
             Description = Description,
-            UserId = TicketState.CurrentUserId,
+            UserId = userId,   // assign after fetching
             StatusId = 1
         };
-        
+
         TicketState.Create(t);
+
+        // Navigate
         Nav.NavigateTo("/my-tickets");
     }
-    
+
     private void Cancel() => Nav.NavigateTo("/my-tickets");
 }

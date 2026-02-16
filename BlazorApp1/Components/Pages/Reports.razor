@@ -1,5 +1,7 @@
 @page "/reports"
-@inject TicketApp.Services.TicketState TicketState
+@attribute [Authorize(Roles = "SupportManager")]
+
+@inject BlazorApp1.Services.TicketState TicketState
 @rendermode InteractiveServer
 
 <h3>Reports</h3>
@@ -38,7 +40,7 @@
 @code {
     private DateTime From { get; set; } = DateTime.UtcNow.AddDays(-30);
     private DateTime To { get; set; } = DateTime.UtcNow;
-    private List<TicketApp.Models.Ticket> Report { get; set; } = new();
+    private List<BlazorApp1.Models.Ticket> Report { get; set; } = new();
     private void Generate()
     {
         var fromUtc = From.ToUniversalTime();

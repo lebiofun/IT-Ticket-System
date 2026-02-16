@@ -1,9 +1,11 @@
 @page "/edit-ticket/{TicketId:int}"
-@inject TicketApp.Services.TicketState TicketState
-@inject NavigationManager Nav
+@attribute [Authorize]
+@inject AuthenticationStateProvider AuthProvider
 @rendermode InteractiveServer
+@inject BlazorApp1.Services.TicketState TicketState
+@inject NavigationManager Nav
 
-<h3>Edit ticket</h3>
+<h3>Edit Ticket</h3>
 
 @if (Ticket == null)
 {
@@ -28,28 +30,29 @@ else
 }
 
 @code {
-    [Parameter]
-    public int TicketId { get; set; }
-    private TicketApp.Models.Ticket? Ticket;
-    private Action? _onChangeHandler;
-    
+    [Parameter] public int TicketId { get; set; }
+
+    private BlazorApp1.Models.Ticket? Ticket;
+
     protected override void OnInitialized()
     {
-        _onChangeHandler = () => InvokeAsync(() => 
-        { 
-            Ticket = TicketState.GetById(TicketId); 
-            StateHasChanged(); 
-        });
-        
-        TicketState.OnChange += _onChangeHandler;
         Ticket = TicketState.GetById(TicketId);
     }
-    private void Save()
+
+    private async Task Save()
     {
         if (Ticket == null) return;
+
         TicketState.Update(Ticket);
-        Nav.NavigateTo("/my-tickets");
+
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.IsInRole("EndUser"))
+            Nav.NavigateTo("/my-tickets");
+        else
+            Nav.NavigateTo("/all-tickets");
     }
+
     private void Cancel() => Nav.NavigateTo("/my-tickets");
-    public void Dispose() => TicketState.OnChange -= _onChangeHandler;
 }

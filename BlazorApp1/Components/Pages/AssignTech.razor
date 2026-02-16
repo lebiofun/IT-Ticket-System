@@ -1,5 +1,7 @@
 @page "/assign-tech"
-@inject TicketApp.Services.TicketState TicketState
+@attribute [Authorize(Roles = "SupportManager")]
+@inject NavigationManager Nav
+@inject BlazorApp1.Services.TicketState TicketState
 @rendermode InteractiveServer
 
 <h3>Assign tech support (Manager)</h3>
@@ -24,11 +26,16 @@
                 <td>
                     <button class="btn btn-sm btn-outline-primary" @onclick="() => Assign(t.TicketId, 42)">Assign to #42</button>
                 </td>
+                <td>
+                    <td><button class="btn btn-link" @onclick="() => Edit(t.TicketId)">Open</button></td>
+                </td>
             </tr>
         }
     </tbody>
 </table>
 
 @code {
+    private void Edit(int id) => Nav.NavigateTo($"/edit-ticket/{id}");
+
     private void Assign(int ticketId, int employeeId) => TicketState.AssignEmployee(ticketId, employeeId);
 }

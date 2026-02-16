@@ -1,5 +1,7 @@
 @page "/all-tickets"
-@inject TicketApp.Services.TicketState TicketState
+@attribute [Authorize(Roles = "TechSupport,SupportManager")]
+
+@inject BlazorApp1.Services.TicketState TicketState
 @rendermode InteractiveServer
 
 <h3>All tickets (Tech Support)</h3>
@@ -21,12 +23,12 @@
             <tr>
                 <td>@t.TicketId</td>
                 <td>@t.Title</td>
-                <td>@(t.UserId ?? 0)</td>
+                <td>@(t.UserId ?? "-")</td>
                 <td>
                     <select @onchange="(e) => ChangeStatus(t.TicketId, e.Value?.ToString())" 
                             class="form-select form-select-sm" 
                             style="width:140px;">
-                        <option value="1" selected="@(t.StatusId==1)">New</option>
+                        <option value="1" selected="@(t.StatusId == 1 ? "selected" : null)">New</option>
                         <option value="2" selected="@(t.StatusId==2)">In Progress</option>
                         <option value="3" selected="@(t.StatusId==3)">Closed</option>
                     </select>
@@ -40,7 +42,7 @@
 
 @code {
     private Action? _onChangeHandler;
-    private IEnumerable<TicketApp.Models.Ticket> Tickets = Array.Empty<TicketApp.Models.Ticket>();
+    private IEnumerable<BlazorApp1.Models.Ticket> Tickets = Array.Empty<BlazorApp1.Models.Ticket>();
 
     protected override void OnInitialized()
     {
@@ -51,7 +53,6 @@
         });
         
         TicketState.OnChange += _onChangeHandler;
-        TicketState.SeedSample();
         Tickets = TicketState.GetAll();
     }
 
