@@ -5,6 +5,7 @@ using BlazorApp1.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,10 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<TicketState>();
 
 // Database context for Identity
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
-
 // Identity with roles
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {

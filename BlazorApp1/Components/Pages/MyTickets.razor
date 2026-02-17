@@ -1,4 +1,5 @@
 @page "/my-tickets"
+@using System.Security.Claims
 @attribute [Authorize(Roles="EndUser, TechSupport, SupportManager")]
 @inject BlazorApp1.Services.TicketState TicketState  
 @inject AuthenticationStateProvider AuthProvider
@@ -62,13 +63,15 @@
     private async Task Load()
     {
         var authState = await AuthProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
+        var userId = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
-        if (userId != null)
-            Tickets = TicketState.GetByUser(userId);
+        if (!string.IsNullOrEmpty(userId))
+        {
+            Tickets = TicketState.GetByUserOrEmployee(userId);
+        }
     }
+
+
 
     private void CreateNew() => Nav.NavigateTo("/create-ticket");
     private void Edit(int id) => Nav.NavigateTo($"/edit-ticket/{id}");

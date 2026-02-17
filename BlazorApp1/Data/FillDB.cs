@@ -25,8 +25,13 @@ public static class FillDB
         // ===== Tech Support user =====
         await EnsureUserAsync(userManager, "tech@local", "Tech123!", "TechSupport", "IT Support");
 
+        await EnsureUserAsync(userManager, "tech@local1", "Tech1234!", "TechSupport", "IT Support");
+
+
         // ===== End User =====
         await EnsureUserAsync(userManager, "user@local", "User123!", "EndUser", "Sales");
+        await EnsureUserAsync(userManager, "user@local1", "User1234!", "EndUser", "Sales");
+
     }
 
     private static async Task EnsureUserAsync(UserManager<ApplicationUser> userManager, string email, string password, string role, string department)

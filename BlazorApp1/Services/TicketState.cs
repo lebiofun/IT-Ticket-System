@@ -1,72 +1,116 @@
-using BlazorApp1.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using BlazorApp1.Data;
+using BlazorApp1.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorApp1.Services
 {
     public class TicketState
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IDbContextFactory<ApplicationDbContext> _factory;
 
         public event Action? OnChange;
         private void Notify() => OnChange?.Invoke();
 
-        public TicketState(ApplicationDbContext context)
+        public TicketState(IDbContextFactory<ApplicationDbContext> factory)
         {
-            _context = context;
+            _factory = factory;
         }
 
-        public IEnumerable<Ticket> GetAll() =>
-            _context.Tickets
-                .OrderByDescending(t => t.CreatedAt)
-                .ToList();
+        // Get all tickets
+        public IEnumerable<Ticket> GetAll()
+        {
+            using var context = _factory.CreateDbContext();
+            return context.Tickets
+                          .OrderByDescending(t => t.CreatedAt)
+                          .ToList();
+        }
 
-        public IEnumerable<Ticket> GetByUser(string userId) =>
-            _context.Tickets
-                .Where(t => t.UserId == userId)
-                .ToList();
+        // Get tickets for a specific user
+        public IEnumerable<Ticket> GetByUser(string userId)
+        {
+            using var context = _factory.CreateDbContext();
+            return context.Tickets
+                          .Where(t => t.UserId == userId)
+                          .OrderByDescending(t => t.CreatedAt)
+                          .ToList();
+        }
 
-        public Ticket? GetById(int id) =>
-            _context.Tickets.FirstOrDefault(t => t.TicketId == id);
+        // Get ticket by ID
+        public Ticket? GetById(int id)
+        {
+            using var context = _factory.CreateDbContext();
+            return context.Tickets.FirstOrDefault(t => t.TicketId == id);
+        }
 
+        // Create a new ticket
         public Ticket Create(Ticket t)
         {
             t.CreatedAt = DateTime.UtcNow;
-            _context.Tickets.Add(t);
-            _context.SaveChanges();
+
+            using var context = _factory.CreateDbContext();
+            context.Tickets.Add(t);
+            context.SaveChanges();
             Notify();
+
             return t;
         }
 
+        // Update an existing ticket
         public void Update(Ticket t)
         {
             t.UpdatedAt = DateTime.UtcNow;
-            _context.Tickets.Update(t);
-            _context.SaveChanges();
+
+            using var context = _factory.CreateDbContext();
+            var existing = context.Tickets.FirstOrDefault(x => x.TicketId == t.TicketId);
+            if (existing == null) return;
+
+            existing.Title = t.Title;
+            existing.Description = t.Description;
+            existing.StatusId = t.StatusId;
+            existing.EmployeeId = t.EmployeeId;
+            existing.UpdatedAt = t.UpdatedAt;
+
+            context.SaveChanges();
             Notify();
         }
 
+        // Change ticket status
         public void ChangeStatus(int ticketId, int statusId)
         {
-            var t = GetById(ticketId);
+            using var context = _factory.CreateDbContext();
+            var t = context.Tickets.FirstOrDefault(x => x.TicketId == ticketId);
             if (t == null) return;
 
             t.StatusId = statusId;
-            if (statusId == 3)
+            if (statusId == 3) // Closed
                 t.ClosedAt = DateTime.UtcNow;
 
-            _context.SaveChanges();
+            context.SaveChanges();
             Notify();
         }
 
-        public void AssignEmployee(int ticketId, int employeeId)
+        // Assign employee by string ID
+        public void AssignEmployee(int ticketId, string employeeId)
         {
-            var t = GetById(ticketId);
+            using var context = _factory.CreateDbContext();
+            var t = context.Tickets.FirstOrDefault(x => x.TicketId == ticketId);
             if (t == null) return;
 
             t.EmployeeId = employeeId;
-            _context.SaveChanges();
+            context.SaveChanges();
             Notify();
         }
+        public IEnumerable<Ticket> GetByUserOrEmployee(string userId)
+        {
+            using var context = _factory.CreateDbContext();
+            return context.Tickets
+                          .Where(t => t.UserId == userId || t.EmployeeId == userId)
+                          .OrderByDescending(t => t.CreatedAt)
+                          .ToList();
+        }
+
     }
 }

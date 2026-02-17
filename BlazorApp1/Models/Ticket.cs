@@ -12,7 +12,7 @@ public class Ticket
 
     public string? UserId { get; set; }
 
-    public int? EmployeeId { get; set; }
+    public string? EmployeeId { get; set; }
 
     public string Department { get; set; } = string.Empty;
 

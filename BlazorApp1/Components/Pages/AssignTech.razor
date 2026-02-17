@@ -1,33 +1,47 @@
 @page "/assign-tech"
+@using Microsoft.AspNetCore.Identity
 @attribute [Authorize(Roles = "SupportManager")]
 @inject NavigationManager Nav
 @inject BlazorApp1.Services.TicketState TicketState
+@inject UserManager<ApplicationUser> UserManager
 @rendermode InteractiveServer
 
 <h3>Assign tech support (Manager)</h3>
-<p>Клик по Assign назначит employee id для примера.</p>
+<p>Select a tech from the dropdown and click Assign to update the ticket.</p>
 
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>#</th>
             <th>Title</th>
             <th>Assigned</th>
-            <th></th>
+            <th>Assign</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach(var t in TicketState.GetAll())
+        @foreach (var t in Tickets)
         {
             <tr>
                 <td>@t.TicketId</td>
                 <td>@t.Title</td>
-                <td>@(t.EmployeeId?.ToString() ?? "-")</td>
+                <td>@GetEmployeeEmail(t.EmployeeId)</td>
                 <td>
-                    <button class="btn btn-sm btn-outline-primary" @onclick="() => Assign(t.TicketId, 42)">Assign to #42</button>
+                    <select class="form-select form-select-sm"
+                            @bind="SelectedEmployee[t.TicketId]">
+                        <option value="">-- Select Tech --</option>
+                        @foreach (var tech in TechUsers)
+                        {
+                            <option value="@tech.Id">@tech.Email</option>
+                        }
+                    </select>
+                    <button class="btn btn-sm btn-outline-primary mt-1"
+                            @onclick="() => Assign(t.TicketId)">
+                        Assign
+                    </button>
                 </td>
                 <td>
-                    <td><button class="btn btn-link" @onclick="() => Edit(t.TicketId)">Open</button></td>
+                    <button class="btn btn-link" @onclick="() => Edit(t.TicketId)">Open</button>
                 </td>
             </tr>
         }
@@ -35,7 +49,46 @@
 </table>
 
 @code {
-    private void Edit(int id) => Nav.NavigateTo($"/edit-ticket/{id}");
+    private List<ApplicationUser> TechUsers = new();       // All tech support users
+    private List<Ticket> Tickets = new();                 // Cached tickets for display
+    private Dictionary<int, string?> SelectedEmployee = new(); // Dropdown selection per ticket
 
-    private void Assign(int ticketId, int employeeId) => TicketState.AssignEmployee(ticketId, employeeId);
+    protected override async Task OnInitializedAsync()
+    {
+        // Load all tech users
+        TechUsers = (await UserManager.GetUsersInRoleAsync("TechSupport")).ToList();
+
+        // Cache tickets once
+        Tickets = TicketState.GetAll().ToList();
+
+        // Initialize dropdown selections with current EmployeeId
+        foreach (var t in Tickets)
+            SelectedEmployee[t.TicketId] = t.EmployeeId;
+    }
+
+    private string GetEmployeeEmail(string? employeeId)
+    {
+        if (string.IsNullOrEmpty(employeeId))
+            return "-";
+
+        var user = TechUsers.FirstOrDefault(u => u.Id == employeeId);
+        return user?.Email ?? employeeId;
+    }
+
+    private void Assign(int ticketId)
+    {
+        var employeeId = SelectedEmployee[ticketId];
+        if (!string.IsNullOrEmpty(employeeId))
+        {
+            // Update backend
+            TicketState.AssignEmployee(ticketId, employeeId);
+
+            // Update cached ticket so UI shows immediately
+            var t = Tickets.FirstOrDefault(x => x.TicketId == ticketId);
+            if (t != null)
+                t.EmployeeId = employeeId;
+        }
+    }
+
+    private void Edit(int id) => Nav.NavigateTo($"/edit-ticket/{id}");
 }
