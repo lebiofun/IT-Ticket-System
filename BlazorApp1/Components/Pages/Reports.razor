@@ -1,70 +1,96 @@
 @page "/reports"
+@using Microsoft.AspNetCore.Identity
 @attribute [Authorize(Roles = "SupportManager")]
 
 @inject BlazorApp1.Services.TicketState TicketState
+@inject UserManager<ApplicationUser> UserManager
 @rendermode InteractiveServer
 
 <h3>Reports</h3>
+
 <div class="card p-3 mb-3" style="max-width:700px;">
     <div class="row">
         <div class="col-md-4 mb-2">
             <label class="form-label">From</label>
             <input type="date" class="form-control" @bind="From" />
-            </div>
-                <div class="col-md-4 mb-2">
-                    <label class="form-label">To</label>
-                    <input type="date" class="form-control" @bind="To" />
-                </div>
-            <div class="col-md-4 d-flex align-items-end">
+        </div>
+        <div class="col-md-4 mb-2">
+            <label class="form-label">To</label>
+            <input type="date" class="form-control" @bind="To" />
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
             <button class="btn btn-primary" @onclick="Generate">Generate</button>
         </div>
     </div>
 </div>
 
-
 @if (Report.Any())
 {
     <h5>Report results</h5>
-    <table class="table table-bordered">
-        <thead><tr><th>#</th><th>Title</th><th>Created</th></tr></thead>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Status</th>
+                <th>User</th>
+                <th>Assigned Tech</th>
+                <th>Closed At</th>
+            </tr>
+        </thead>
         <tbody>
-        @foreach(var r in Report)
+        @foreach (var r in Report)
         {
             <tr>
                 <td>@r.TicketId</td>
                 <td>@r.Title</td>
                 <td>@r.CreatedAt.ToLocalTime().ToString("g")</td>
-                @if (r.StatusId == 1)
-                {
-                    <td><span class="badge bg-warning text-dark">New</span></td>
-                }
-                else if (r.StatusId == 2)
-                {
-                    <td><span class="badge bg-info text-dark">In Progress</span></td>
-                }
-                else if (r.StatusId == 3)
-                {
-                    <td><span class="badge bg-success">Closed</span></td>
-                }
-                else
-                {
-                    <td><span class="badge bg-secondary">Unknown</span></td>
-                }
+
+                <td>@GetStatus(r.StatusId)</td>
+                <td>@GetUserEmail(r.UserId)</td>
+                <td>@GetUserEmail(r.EmployeeId)</td>
+
+                <td>@(r.ClosedAt?.ToLocalTime().ToString("g") ?? "-")</td>
             </tr>
         }
         </tbody>
     </table>
 }
-
-
+else
+{
+    <p>No tickets found for the selected date range.</p>
+}
 @code {
     private DateTime From { get; set; } = DateTime.UtcNow.AddDays(-30);
     private DateTime To { get; set; } = DateTime.UtcNow;
-    private List<BlazorApp1.Models.Ticket> Report { get; set; } = new();
+    private List<Ticket> Report { get; set; } = new();
+    private Dictionary<string, string> UsersMap = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var users = UserManager.Users.ToList();
+        foreach (var user in users) UsersMap[user.Id] = user.Email ?? user.UserName ?? user.Id;
+    }
     private void Generate()
     {
         var fromUtc = From.ToUniversalTime();
         var toUtc = To.ToUniversalTime().AddDays(1).AddTicks(-1);
-        Report = TicketState.GetAll().Where(t => t.CreatedAt >= fromUtc && t.CreatedAt <= toUtc).ToList();
+        Report = TicketState.GetAll().Where(t => t.CreatedAt >= fromUtc && t.CreatedAt <= toUtc).OrderBy(t => t.TicketId).ToList();
+    }
+    private string GetUserEmail(string? id)
+    {
+        if (string.IsNullOrEmpty(id))
+            return "-";
+
+        return UsersMap.TryGetValue(id, out var email)? email : id;
+    }
+    private string GetStatus(int? statusId)
+    {
+        return statusId switch
+        {
+            1 => "New", 2 => "In Progress", 3 => "Closed", _ => "Unknown"
+        };
     }
 }
