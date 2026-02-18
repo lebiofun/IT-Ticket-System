@@ -1,7 +1,12 @@
 @page "/my-tickets"
+@inject UserManager<ApplicationUser> UserManager
 @using System.Security.Claims
 @attribute [Authorize(Roles="EndUser, TechSupport, SupportManager")]
 @inject BlazorApp1.Services.TicketState TicketState  
+@using Microsoft.AspNetCore.Identity
+@using BlazorApp1.Models
+@inject UserManager<ApplicationUser> UserManager
+
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager Nav
 @rendermode InteractiveServer
@@ -13,7 +18,7 @@
 
 <table class="table table-striped">
     <thead>
-        <tr><th>#</th><th>Title</th><th>Status</th><th>Updated</th><th></th></tr>
+        <tr><th>#</th><th>Title</th><th>Status</th><th>Updated</th><th></th><th>Employee</th></tr>
     </thead>
     <tbody>
         @foreach (var t in Tickets)
@@ -39,16 +44,19 @@
                 }
                 <td>@(t.UpdatedAt?.ToLocalTime().ToString("g") ?? t.CreatedAt.ToLocalTime().ToString("g"))</td>
                 <td><button class="btn btn-link" @onclick="() => Edit(t.TicketId)">Edit</button></td>
+                <td>@GetUserEmail(t.EmployeeId)</td>
             </tr>
         }
     </tbody>
 </table>
-
 @code {
     private Action? _onChangeHandler;
     private IEnumerable<BlazorApp1.Models.Ticket> Tickets = Array.Empty<BlazorApp1.Models.Ticket>();
+    private Dictionary<string, string> UsersMap = new();
     protected override async Task OnInitializedAsync()
     {
+        var users = UserManager.Users.ToList();
+        foreach (var user in users) UsersMap[user.Id] = user.Email ?? user.UserName ?? user.Id;
         _onChangeHandler = async () =>
         {
             await Load();
@@ -59,7 +67,13 @@
 
         await Load();
     }
+    private string GetUserEmail(string? id)
+    {
+        if (string.IsNullOrEmpty(id))
+            return "-";
 
+        return UsersMap.TryGetValue(id, out var email)? email : id;
+    }
     private async Task Load()
     {
         var authState = await AuthProvider.GetAuthenticationStateAsync();

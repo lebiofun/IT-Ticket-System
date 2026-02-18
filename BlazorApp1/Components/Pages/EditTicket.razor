@@ -4,6 +4,7 @@
 @rendermode InteractiveServer
 @inject BlazorApp1.Services.TicketState TicketState
 @inject NavigationManager Nav
+@inject IJSRuntime JS
 
 <h3>Edit Ticket</h3>
 
@@ -25,6 +26,7 @@ else
         <div class="d-flex gap-2">
             <button class="btn btn-primary" @onclick="Save">Save</button>
             <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+            <button class="btn btn-danger" @onclick="Delete">Delete</button>
         </div>
     </div>
 }
@@ -53,6 +55,23 @@ else
         else
             Nav.NavigateTo("/all-tickets");
     }
+    private async Task Delete()
+    {
+        if (Ticket == null) return;
+        var confirmed = await JS.InvokeAsync<bool>("confirm", 
+            "Delete this ticket?");
 
+        if (!confirmed) return;
+
+        TicketState.Delete(Ticket.TicketId);
+
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.IsInRole("EndUser"))
+            Nav.NavigateTo("/my-tickets");
+        else
+            Nav.NavigateTo("/all-tickets");
+    }
     private void Cancel() => Nav.NavigateTo("/my-tickets");
 }

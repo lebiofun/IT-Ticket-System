@@ -23,7 +23,7 @@ namespace BlazorApp1.Services
         public IEnumerable<Ticket> GetAll()
         {
             using var context = _factory.CreateDbContext();
-            return context.Tickets.OrderBy(t => t.StatusId).ThenByDescending(t => t.CreatedAt).ToList();
+            return context.Tickets.OrderByDescending(t => t.CreatedAt).ToList();
         }
 
         // Get tickets for a specific user
@@ -56,6 +56,19 @@ namespace BlazorApp1.Services
 
             return t;
         }
+        public void Delete(int id)
+        {
+            using var context = _factory.CreateDbContext();
+
+            var ticket = context.Tickets.FirstOrDefault(t => t.TicketId == id);
+            if (ticket == null) return;
+
+            context.Tickets.Remove(ticket);
+            context.SaveChanges();
+
+            Notify();
+        }
+
 
         // Update an existing ticket
         public void Update(Ticket t)
