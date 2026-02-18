@@ -47,8 +47,8 @@
     protected override void OnInitialized()
     {
         _onChangeHandler = () => InvokeAsync(() => 
-        { 
-            Tickets = TicketState.GetAll(); 
+        {  
+            Tickets = TicketState.GetAll();
             StateHasChanged(); 
         });
         

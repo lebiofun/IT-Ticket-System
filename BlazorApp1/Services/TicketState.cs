@@ -23,9 +23,7 @@ namespace BlazorApp1.Services
         public IEnumerable<Ticket> GetAll()
         {
             using var context = _factory.CreateDbContext();
-            return context.Tickets
-                          .OrderByDescending(t => t.CreatedAt)
-                          .ToList();
+            return context.Tickets.OrderBy(t => t.StatusId).ThenByDescending(t => t.CreatedAt).ToList();
         }
 
         // Get tickets for a specific user
@@ -33,8 +31,8 @@ namespace BlazorApp1.Services
         {
             using var context = _factory.CreateDbContext();
             return context.Tickets
-                          .Where(t => t.UserId == userId)
-                          .OrderByDescending(t => t.CreatedAt)
+                          .Where(t => t.UserId == userId).OrderBy(t => t.StatusId)
+                          .ThenByDescending(t => t.CreatedAt)
                           .ToList();
         }
 
@@ -43,6 +41,7 @@ namespace BlazorApp1.Services
         {
             using var context = _factory.CreateDbContext();
             return context.Tickets.FirstOrDefault(t => t.TicketId == id);
+
         }
 
         // Create a new ticket
