@@ -1,0 +1,109 @@
+@page "/ticket/{TicketId:int}/chat"
+@attribute [Authorize(Roles="EndUser,TechSupport,SupportManager")]
+
+@inject ChatState ChatState
+@inject TicketState TicketState
+@inject AuthenticationStateProvider AuthProvider
+@inject UserManager<ApplicationUser> UserManager
+@inject NavigationManager Nav
+
+@rendermode InteractiveServer
+
+<h3>Ticket Chat</h3>
+<div class="card p-3 mb-3" style="height:400px; overflow-y:auto;">
+    @foreach (var m in Messages)
+    {
+        <div class="mb-3 border-bottom pb-2">
+            <div>
+                <b>@GetUserEmail(m.SenderId)</b>
+                <small class="text-muted ms-2">
+                    (@m.SentAt.ToLocalTime().ToString("g"))
+                </small>
+            </div>
+            <div>@m.Text</div>
+        </div>
+    }
+</div>
+
+<div class="input-group">
+    <input class="form-control" @bind="NewMessage" />
+    <button class="btn btn-primary" @onclick="SendMessageAsync">Send</button>
+</div>
+
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext _context
+@inject UserManager<ApplicationUser> UserManager
+@inject AuthenticationStateProvider AuthProvider
+
+@code {
+    [Parameter] public int TicketId { get; set; }
+
+    private List<ChatMessage> Messages = new();
+    private Dictionary<string, string> UsersMap = new();
+    private string NewMessage = string.Empty;
+    private string? CurrentUserId;
+
+    private PeriodicTimer? _timer;
+    private CancellationTokenSource? _cts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var auth = await AuthProvider.GetAuthenticationStateAsync();
+        CurrentUserId = auth.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        await LoadMessagesAsync();
+        StartAutoRefresh();
+    }
+
+    private void StartAutoRefresh()
+    {
+        _cts = new CancellationTokenSource();
+        _timer = new PeriodicTimer(TimeSpan.FromSeconds(3));
+        _ = Task.Run(async () =>
+        {
+            while (await _timer.WaitForNextTickAsync(_cts.Token))
+            {
+                await InvokeAsync(async () =>
+                {
+                    await LoadMessagesAsync();
+                });
+            }
+        });
+    }
+    public void Dispose()
+    {
+        _cts?.Cancel();
+        _timer?.Dispose();
+    }
+    private async Task LoadMessagesAsync()
+    {
+        Messages = await _context.ChatMessages.Where(m => m.TicketId == TicketId).OrderBy(m => m.SentAt).ToListAsync();
+        var userIds = Messages.Where(m => !string.IsNullOrEmpty(m.SenderId)).Select(m => m.SenderId!).ToList();
+        if (userIds.Count > 0)
+        {
+            var users = await UserManager.Users.Where(u => userIds.Contains(u.Id)).ToListAsync();
+            UsersMap = users.ToDictionary(u => u.Id, u => u.Email ?? u.UserName ?? u.Id);
+        }
+        else {UsersMap.Clear();}
+        StateHasChanged();
+    }
+    private string GetUserEmail(string? id)
+    {
+        if (string.IsNullOrEmpty(id)) return "-";
+        return UsersMap.TryGetValue(id, out var email) ? email : id;
+    }
+    private async Task SendMessageAsync()
+    {
+        if (string.IsNullOrWhiteSpace(NewMessage) || string.IsNullOrEmpty(CurrentUserId)) return;
+        var msg = new ChatMessage
+        {
+            TicketId = TicketId,
+            SenderId = CurrentUserId,
+            Text = NewMessage,
+            SentAt = DateTime.UtcNow
+        };
+        _context.ChatMessages.Add(msg);
+        await _context.SaveChangesAsync();
+        NewMessage = string.Empty;
+        await LoadMessagesAsync();
+    }
+}

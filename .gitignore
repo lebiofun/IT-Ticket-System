@@ -365,3 +365,5 @@ FodyWeavers.xsd
 /BlazorApp1/Migrations
 /BlazorApp1/Migrations
 BlazorApp1/appsettings.json
+/BlazorApp1/Migrations
+BlazorApp1/Migrations/ApplicationDbContextModelSnapshot.cs

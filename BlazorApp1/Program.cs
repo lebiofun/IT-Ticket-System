@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Your scoped app state
 builder.Services.AddScoped<TicketState>();
-
+builder.Services.AddScoped<ChatState>();
 // Database context for Identity
 builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
     options.UseSqlServer(

@@ -43,7 +43,13 @@
                     <td><span class="badge bg-secondary">Unknown</span></td>
                 }
                 <td>@(t.UpdatedAt?.ToLocalTime().ToString("g") ?? t.CreatedAt.ToLocalTime().ToString("g"))</td>
-                <td><button class="btn btn-link" @onclick="() => Edit(t.TicketId)">Edit</button></td>
+                <td>
+                    <button class="btn btn-link" @onclick="() => Edit(t.TicketId)">Edit</button>
+                    <button class="btn btn-link text-success" 
+                            @onclick="() => OpenChat(t.TicketId)">
+                        Open Chat
+                    </button>
+                </td>
                 <td>@GetUserEmail(t.EmployeeId)</td>
             </tr>
         }
@@ -86,7 +92,7 @@
     }
 
 
-
+    private void OpenChat(int id) => Nav.NavigateTo($"/ticket/{id}/chat");
     private void CreateNew() => Nav.NavigateTo("/create-ticket");
     private void Edit(int id) => Nav.NavigateTo($"/edit-ticket/{id}");
     public void Dispose() => TicketState.OnChange -= _onChangeHandler;
